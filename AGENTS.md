@@ -7,17 +7,17 @@ This project follows the **Clean Architecture** and **Hexagonal Architecture** p
 ### Architecture Layers
 
 ```
-┌─────────────────┐
-│   Presentation  │ ← HTTP handlers, CLI interfaces
-├─────────────────┤
-│   Use Cases     │ ← Business logic, application services  
-├─────────────────┤
-│   Entities      │ ← Domain models, business rules
-├─────────────────┤
-│   Interfaces    │ ← Repository interfaces, ports
-├─────────────────┤
-│   Infrastructure│ ← Database implementations, external services
-└─────────────────┘
+┌─────────────────────┐
+│   Presentation      │ ← HTTP handlers, gRPC handlers, CLI interfaces
+├─────────────────────┤
+│   Use Cases         │ ← Business logic, application services
+├─────────────────────┤
+│   Entities          │ ← Domain models, business rules
+├─────────────────────┤
+│   Interfaces        │ ← Repository interfaces, ports
+├─────────────────────┤
+│   Infrastructure    │ ← Database implementations, external services
+└─────────────────────┘
 ```
 
 ## Core Principles
@@ -53,8 +53,8 @@ Every data access layer implements interfaces to enable:
 - **Event Agent**: Manages event publishing and subscription
 
 ### Infrastructure Agents
-- **Database Agent**: Implements repository interfaces with specific DB technology
-- **Cache Agent**: Provides caching mechanisms
+- **Database Agent**: Implements repository interfaces with specific DB technology (default: PostgreSQL)
+- **Cache Agent**: Provides caching mechanisms (default: Redis)
 - **Message Agent**: Handles messaging and queue operations
 
 ## Implementation Guidelines
