@@ -110,6 +110,8 @@ func (r *PostgreSQLUserRepository) Save(ctx context.Context, user *User) error {
 - Maintain >= 80% test coverage for business logic
 - Prioritize unit tests for faster feedback and isolation
 - Commit messages should be concise (under 60 characters when possible)
+- Minimize nil pointer risks with safe pointer handling
+- Ensure secure and performant pointer usage
 
 ## Benefits
 
