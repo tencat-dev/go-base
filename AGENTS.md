@@ -60,17 +60,22 @@ Every data access layer implements interfaces to enable:
 ## Implementation Guidelines
 
 ### Entity Layer
+Entities should be plain Go structs with minimal dependencies:
 ```go
+// User represents a user entity with UUID v7 identifier
 type User struct {
     ID        uuid.UUID
     CreatedAt time.Time
     UpdatedAt time.Time
-    // ... business fields
+    Email     string
+    Name      string
 }
 ```
 
 ### Interface Layer
+Repository interfaces define contracts for data access:
 ```go
+// UserRepository defines the contract for user data operations
 type UserRepository interface {
     Save(ctx context.Context, user *User) error
     FindByID(ctx context.Context, id uuid.UUID) (*User, error)
@@ -79,16 +84,32 @@ type UserRepository interface {
 ```
 
 ### Infrastructure Layer
+Concrete implementations adhere to interfaces while encapsulating technology-specific details:
 ```go
-// Can be swapped: PostgreSQLUserRepository → MySQLUserRepository → MongoUserRepository
+// PostgreSQLUserRepository implements UserRepository using PostgreSQL
 type PostgreSQLUserRepository struct {
     db *sql.DB
 }
 
 func (r *PostgreSQLUserRepository) Save(ctx context.Context, user *User) error {
-    // Implementation
+    query := `INSERT INTO users (id, email, name, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)`
+    _, err := r.db.ExecContext(ctx, query, user.ID, user.Email, user.Name, user.CreatedAt, user.UpdatedAt)
+    return err
 }
 ```
+
+### Code Quality Standards
+- Keep functions under 20 lines when possible (max 60 lines)
+- Limit files to approximately 70 lines for optimal readability
+- Follow Go idiomatic patterns and fmt standards
+- Write comprehensive tests for all business logic
+- Use meaningful variable and function names
+- Apply consistent error handling patterns
+- Eliminate dead code and unnecessary dependencies
+- Apply SOLID principles for maintainable design
+- Maintain >= 80% test coverage for business logic
+- Prioritize unit tests for faster feedback and isolation
+- Commit messages should be concise (under 60 characters when possible)
 
 ## Benefits
 
