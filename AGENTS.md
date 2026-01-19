@@ -2,7 +2,7 @@
 
 ## Project Architecture Overview
 
-This project follows the **Clean Architecture** and **Hexagonal Architecture** patterns to ensure maintainability, testability, and independence from external frameworks or databases.
+This project follows the **Clean Architecture** and **Hexagonal Architecture** patterns built on top of **Kratos** (github.com/go-kratos/kratos) to ensure maintainability, testability, and independence from external frameworks or databases.
 
 ### Architecture Layers
 
@@ -54,8 +54,9 @@ Every data access layer implements interfaces to enable:
 
 ### Infrastructure Agents
 - **Database Agent**: Implements repository interfaces with specific DB technology (default: PostgreSQL)
-- **Cache Agent**: Provides caching mechanisms (default: Redis)
+- **Cache Agent**: Provides caching mechanisms (default: Redis via github.com/redis/go-redis/v9)
 - **Message Agent**: Handles messaging and queue operations
+- **Config Agent**: Manages environment variables and configuration using github.com/caarlos0/env/v11
 
 ## Implementation Guidelines
 
