@@ -2,7 +2,7 @@
 
 ## Project Architecture Overview
 
-This project follows the **Clean Architecture** and **Hexagonal Architecture** patterns built on top of **Kratos** (github.com/go-kratos/kratos) to ensure maintainability, testability, and independence from external frameworks or databases.
+This project follows the **Clean Architecture** and **Hexagonal Architecture** patterns built on top of **gofr** (github.com/gofr-dev/gofr) to ensure maintainability, testability, and independence from external frameworks or databases.
 
 ### Architecture Layers
 
