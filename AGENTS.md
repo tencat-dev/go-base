@@ -32,9 +32,9 @@ This project follows the **Clean Architecture** and **Hexagonal Architecture** p
 - **Adapters**: Implement the ports to connect the domain with external systems
 - **Domain**: Core business logic sits at the center, isolated from external concerns
 
-### 3. UUID v7 Implementation
-All primary keys and unique identifiers use **UUID version 7**:
-- Provides temporal ordering capability
+### 3. UUID Implementation
+All primary keys and unique identifiers use UUID with the default library **github.com/google/uuid**:
+- Provides temporal ordering capability (for UUID v7)
 - Ensures global uniqueness
 - Improves database performance compared to random UUIDs
 
