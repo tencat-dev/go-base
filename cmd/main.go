@@ -1,9 +1,15 @@
 package main
 
 import (
-	"fmt"
+	"gofr.dev/pkg/gofr"
 )
 
 func main() {
-	fmt.Println("Hello World")
+	app := gofr.New()
+
+	app.GET("/hello", func(ctx *gofr.Context) (interface{}, error) {
+		return "Hello World!", nil
+	})
+
+	app.Run()
 }
