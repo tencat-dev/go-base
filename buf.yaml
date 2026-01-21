@@ -8,6 +8,7 @@ breaking:
     - FILE
 modules:
   - path: api
+  - path: internal/conf
 deps:
   - buf.build/googleapis/googleapis
   - buf.build/bufbuild/protovalidate

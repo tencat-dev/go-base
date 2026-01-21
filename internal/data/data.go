@@ -1,7 +1,7 @@
 package data
 
 import (
-	"github.com/tencat-dev/go-base/internal/conf"
+	"github.com/tencat-dev/go-base/codegen/proto"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
