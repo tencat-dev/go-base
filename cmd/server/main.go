@@ -4,6 +4,8 @@ import (
 	"flag"
 	"os"
 
+	"github.com/google/uuid"
+
 	"server/internal/conf"
 
 	"github.com/go-kratos/kratos/v2"
@@ -26,17 +28,18 @@ var (
 	// flagconf is the config flag.
 	flagconf string
 
-	id, _ = os.Hostname()
+	hostname, _ = os.Hostname()
+	id, _       = uuid.NewV7()
 )
 
 func init() {
-	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
+	flag.StringVar(&flagconf, "conf", "./configs", "config path, eg: -conf config.yaml")
 }
 
 func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
 	return kratos.New(
-		kratos.ID(id),
-		kratos.Name(Name),
+		kratos.ID(id.String()),
+		kratos.Name(hostname),
 		kratos.Version(Version),
 		kratos.Metadata(map[string]string{}),
 		kratos.Logger(logger),
