@@ -1,0 +1,23 @@
+version: v2
+managed:
+  enabled: true
+  disable:
+    # Disables all go_package changes for this module only
+    - file_option: go_package
+      module: buf.build/googleapis/googleapis
+plugins:
+  - local: protoc-gen-go
+    out: api
+    opt: paths=source_relative
+
+  - local: protoc-gen-go-grpc
+    out: api
+    opt: paths=source_relative
+
+  - local: protoc-gen-go-http
+    out: api
+    opt: paths=source_relative
+
+#  - local: protoc-gen-openapi
+#    out: .
+#    opt: fq_schema_naming=true,default_response=false
