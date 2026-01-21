@@ -53,7 +53,7 @@ Every data access layer implements interfaces to enable:
 - **Event Agent**: Manages event publishing and subscription
 
 ### Infrastructure Agents
-- **Database Agent**: Implements repository interfaces with specific DB technology (default: PostgreSQL)
+- **Database Agent**: Implements repository interfaces with specific DB technology (default: PostgreSQL) using github.com/stephenafamo/bob for ORM, SQL query and migration
 - **Cache Agent**: Provides caching mechanisms (default: Redis via github.com/redis/go-redis/v9)
 - **Message Agent**: Handles messaging and queue operations
 - **Config Agent**: Manages environment variables and configuration following the config structure in configs/ directory with kratos framework
