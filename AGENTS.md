@@ -99,6 +99,17 @@ func (r *PostgreSQLUserRepository) Save(ctx context.Context, user *User) error {
 }
 ```
 
+### Database Migration Structure
+Database migration files should be placed in a dedicated `migrations/` directory at the project root level. This directory contains versioned SQL files that define schema changes. The structure typically follows:
+```
+migrations/
+├── 00001_create_users_table.down.sql
+├── 00001_create_users_table.up.sql
+├── 00002_add_email_to_users.down.sql
+├── 00002_add_email_to_users.up.sql
+```
+This approach separates migration concerns from application code while maintaining clear version control of database schema changes.
+
 ### Code Quality Standards
 - Keep functions under 20 lines when possible (max 60 lines)
 - Limit files to approximately 70 lines for optimal readability
