@@ -6,7 +6,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"server/internal/conf"
+	"github.com/tencat-dev/go-base/internal/conf"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"

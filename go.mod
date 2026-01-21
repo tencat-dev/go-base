@@ -1,8 +1,6 @@
-module server
+module github.com/tencat-dev/go-base
 
-go 1.22
-
-toolchain go1.24.6
+go 1.25
 
 require (
 	github.com/go-kratos/kratos/v2 v2.9.2
