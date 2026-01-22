@@ -43,5 +43,6 @@ devenv.local.yaml
 .pre-commit-config.yaml
 
 .DS_Store
+**/.DS_Store
 
 config.yaml
