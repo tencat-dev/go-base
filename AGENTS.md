@@ -54,7 +54,7 @@ Every data access layer implements interfaces to enable:
 
 ### Infrastructure Agents
 - **Database Agent**: Implements repository interfaces with specific DB technology (default: PostgreSQL 18+) using github.com/jackc/pgx for connection, github.com/stephenafamo/bob for ORM and SQL query, and github.com/golang-migrate/migrate/v4 for migration
-- **Cache Agent**: Provides caching mechanisms and distributed locking (default: Redis 8+ or Valkey 8+ via github.com/redis/go-redis/v9 for caching and Redis Lock for distributed locking)
+- **Cache Agent**: Provides caching mechanisms (default: Redis 8+ or Valkey 8+ via github.com/redis/go-redis/v9)
 - **Message Agent**: Handles messaging and queue operations (default: Redis Queue)
 - **Config Agent**: Manages environment variables and configuration following the config structure in configs/ directory with kratos framework
 
@@ -115,6 +115,7 @@ This approach separates migration concerns from application code while maintaini
 - Limit files to approximately 70 lines for optimal readability
 - Follow Go idiomatic patterns and fmt standards
 - Write comprehensive tests for all business logic
+- Unit test code at least 3 times to ensure reliability
 - Use meaningful variable and function names
 - Apply consistent error handling patterns
 - Eliminate dead code and unnecessary dependencies
