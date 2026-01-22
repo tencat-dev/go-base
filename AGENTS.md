@@ -53,9 +53,9 @@ Every data access layer implements interfaces to enable:
 - **Event Agent**: Manages event publishing and subscription
 
 ### Infrastructure Agents
-- **Database Agent**: Implements repository interfaces with specific DB technology (default: PostgreSQL) using github.com/jackc/pgx for connection, github.com/stephenafamo/bob for ORM and SQL query, and github.com/golang-migrate/migrate/v4 for migration
-- **Cache Agent**: Provides caching mechanisms (default: Redis 8+ or Valkey 8+ via github.com/redis/go-redis/v9)
-- **Message Agent**: Handles messaging and queue operations
+- **Database Agent**: Implements repository interfaces with specific DB technology (default: PostgreSQL 18+) using github.com/jackc/pgx for connection, github.com/stephenafamo/bob for ORM and SQL query, and github.com/golang-migrate/migrate/v4 for migration
+- **Cache Agent**: Provides caching mechanisms and distributed locking (default: Redis 8+ or Valkey 8+ via github.com/redis/go-redis/v9 for caching and Redis Lock for distributed locking)
+- **Message Agent**: Handles messaging and queue operations (default: Redis Queue)
 - **Config Agent**: Manages environment variables and configuration following the config structure in configs/ directory with kratos framework
 
 ## Implementation Guidelines
