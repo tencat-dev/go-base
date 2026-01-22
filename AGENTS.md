@@ -1,82 +1,150 @@
-# AGENT SYSTEM DESIGN
+# AGENT SYSTEM ARCHITECTURE CONSTITUTION
 
-## Project Architecture Overview
+## 1. Purpose
 
-This project follows the **Clean Architecture** and **Hexagonal Architecture** patterns built on top of **go-kratos** (github.com/go-kratos/kratos) to ensure maintainability, testability, and independence from external frameworks or databases.
+This document defines the **official architecture rules and design principles** of the project.
+It serves as a **single source of truth** for all contributors to ensure:
 
-### Architecture Layers
+* Architectural consistency
+* Long-term maintainability
+* High testability
+* Technology independence
+
+This project is built on **Clean Architecture** and **Hexagonal Architecture (Ports & Adapters)**, implemented using **go-kratos** as the application framework.
+
+---
+
+## 2. Architectural Philosophy
+
+### 2.1 Clean Architecture
+
+The system strictly follows Clean Architecture principles:
+
+* **Independence of frameworks**: Frameworks are replaceable details
+* **Independence of UI**: Business logic does not depend on delivery mechanisms
+* **Independence of database**: Domain and use cases are unaware of storage
+* **Testability**: Business rules are testable without external systems
+
+Dependency direction is **always inward**.
+
+---
+
+### 2.2 Hexagonal Architecture (Ports & Adapters)
+
+* **Ports** define contracts the core depends on
+* **Adapters** implement ports to interact with external systems
+* **Domain & Application** remain isolated from infrastructure
+
+---
+
+## 3. Logical Architecture Layers
 
 ```
-┌─────────────────────┐
-│   Presentation      │ ← HTTP handlers, gRPC handlers, CLI interfaces
-├─────────────────────┤
-│   Use Cases         │ ← Business logic, application services
-├─────────────────────┤
-│   Entities          │ ← Domain models, business rules
-├─────────────────────┤
-│   Interfaces        │ ← Repository interfaces, ports
-├─────────────────────┤
-│   Infrastructure    │ ← Database implementations, external services
-└─────────────────────┘
+┌───────────────────────────┐
+│ Presentation              │  HTTP / gRPC / CLI
+├───────────────────────────┤
+│ Application               │  Use Cases / Services
+├───────────────────────────┤
+│ Domain                    │  Entities / Value Objects
+├───────────────────────────┤
+│ Ports                     │  Repositories / Event / External APIs
+├───────────────────────────┤
+│ Infrastructure            │  DB / Cache / MQ / Frameworks
+└───────────────────────────┘
 ```
 
-## Core Principles
+### Layer Responsibilities
 
-### 1. Clean Architecture
-- **Independence**: Framework-independent, UI-independent, database-independent
-- **Testable**: Business rules can be tested without UI, database, web server, or any external element
-- **Maintainable**: Changes in one area don't cascade to others
+| Layer          | Responsibility                                       |
+| -------------- | ---------------------------------------------------- |
+| Presentation   | Request validation, DTO mapping, response formatting |
+| Application    | Orchestrates business rules and workflows            |
+| Domain         | Core business rules and invariants                   |
+| Ports          | Interfaces owned by the core                         |
+| Infrastructure | Technology-specific implementations                  |
 
-### 2. Hexagonal Architecture (Ports & Adapters)
-- **Ports**: Define contracts (interfaces) that the domain exposes and consumes
-- **Adapters**: Implement the ports to connect the domain with external systems
-- **Domain**: Core business logic sits at the center, isolated from external concerns
+---
 
-### 3. UUID Implementation
-All primary keys and unique identifiers use UUID with the default library **github.com/google/uuid**:
-- Provides temporal ordering capability (for UUID v7)
-- Ensures global uniqueness
-- Improves database performance compared to random UUIDs
+## 4. Agent Concept (Conceptual Only)
 
-### 4. Interface-Driven Development
-Every data access layer implements interfaces to enable:
-- Easy database switching (PostgreSQL → MySQL → MongoDB)
-- Mock implementations for testing
-- Dependency inversion principle compliance
+> **Agent** represents a *conceptual responsibility*, **not** a runtime process, package, or goroutine.
 
-## Agent Types
+Agents must always be implemented **within the boundaries of the architecture layers**.
 
-### Primary Agents
-- **User Agent**: Manages user authentication, authorization, and profiles
-- **Data Agent**: Handles data persistence and retrieval operations  
-- **Service Agent**: Orchestrates business logic and use cases
-- **Event Agent**: Manages event publishing and subscription
+### Agent Mapping
 
-### Infrastructure Agents
-- **Database Agent**: Implements repository interfaces with specific DB technology (default: PostgreSQL 18+) using github.com/jackc/pgx for connection, github.com/stephenafamo/bob for ORM and SQL query, and github.com/golang-migrate/migrate/v4 for migration
-- **Cache Agent**: Provides caching mechanisms (default: Redis 8+ or Valkey 8+ via github.com/redis/go-redis/v9)
-- **Message Agent**: Handles messaging and queue operations (default: Redis Queue)
-- **Config Agent**: Manages environment variables and configuration following the config structure in configs/ directory with kratos framework
+| Agent          | Responsibility                                | Architectural Location |
+| -------------- | --------------------------------------------- | ---------------------- |
+| User Agent     | Authentication, authorization, user lifecycle | Application / Ports    |
+| Service Agent  | Business orchestration                        | Application            |
+| Data Agent     | Data access contracts                         | Ports                  |
+| Event Agent    | Event publishing & consuming contracts        | Ports                  |
+| Database Agent | Database implementation                       | Infrastructure         |
+| Cache Agent    | Caching implementation                        | Infrastructure         |
+| Message Agent  | Messaging / queue implementation              | Infrastructure         |
+| Config Agent   | Configuration & bootstrap                     | Infrastructure         |
 
-## Implementation Guidelines
+---
 
-### Entity Layer
-Entities should be plain Go structs with minimal dependencies:
+## 5. Domain Rules
+
+### 5.1 Entities
+
+* Plain Go structs
+* No framework dependencies
+* No database annotations
+* No infrastructure imports
+
 ```go
-// User represents a user entity with UUID v7 identifier
 type User struct {
     ID        uuid.UUID
-    CreatedAt time.Time
-    UpdatedAt time.Time
     Email     string
     Name      string
+    CreatedAt time.Time
+    UpdatedAt time.Time
 }
 ```
 
-### Interface Layer
-Repository interfaces define contracts for data access:
+---
+
+### 5.2 UUID Policy
+
+* All primary identifiers use **UUID v7**
+* UUIDs are generated **in the Application layer**
+* IDs are immutable once assigned
+* Domain must not rely on database-generated identifiers
+
 ```go
-// UserRepository defines the contract for user data operations
+type IDGenerator interface {
+    New() uuid.UUID
+}
+```
+
+---
+
+## 6. Application Layer Rules
+
+* Contains use cases and business workflows
+* Depends only on:
+
+    * Domain
+    * Ports
+* Never depends on Infrastructure
+
+```go
+type UserUseCase struct {
+    repo UserRepository
+    ids  IDGenerator
+}
+```
+
+---
+
+## 7. Ports (Interface Layer)
+
+Ports are **owned by the core**, not infrastructure.
+
+```go
 type UserRepository interface {
     Save(ctx context.Context, user *User) error
     FindByID(ctx context.Context, id uuid.UUID) (*User, error)
@@ -84,54 +152,97 @@ type UserRepository interface {
 }
 ```
 
-### Infrastructure Layer
-Concrete implementations adhere to interfaces while encapsulating technology-specific details:
-```go
-// PostgreSQLUserRepository implements UserRepository using PostgreSQL
-type PostgreSQLUserRepository struct {
-    db *sql.DB
-}
+---
 
-func (r *PostgreSQLUserRepository) Save(ctx context.Context, user *User) error {
-    query := `INSERT INTO users (id, email, name, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)`
-    _, err := r.db.ExecContext(ctx, query, user.ID, user.Email, user.Name, user.CreatedAt, user.UpdatedAt)
-    return err
+## 8. Infrastructure Rules
+
+Infrastructure is a **detail**, never a dependency of the core.
+
+### 8.1 Database
+
+* Default database: **PostgreSQL 18+**
+* Driver: `github.com/jackc/pgx/v5`
+* ORM / SQL builder: `github.com/stephenafamo/bob`
+* Migrations: `github.com/golang-migrate/migrate/v4`
+
+```go
+type PostgreSQLUserRepository struct {
+    db *pgxpool.Pool
 }
 ```
 
-### Database Migration Structure
-Database migration files should be placed in a dedicated `migrations/` directory at the project root level. This directory contains versioned SQL files that define schema changes. The structure typically follows:
+---
+
+### 8.2 Migration Structure
+
 ```
 migrations/
-├── 00001_create_users_table.down.sql
 ├── 00001_create_users_table.up.sql
-├── 00002_add_email_to_users.down.sql
-├── 00002_add_email_to_users.up.sql
+├── 00001_create_users_table.down.sql
+├── 00002_add_index_email.up.sql
+├── 00002_add_index_email.down.sql
 ```
-This approach separates migration concerns from application code while maintaining clear version control of database schema changes.
 
-### Code Quality Standards
-- Keep functions under 20 lines when possible (max 60 lines)
-- Limit files to approximately 70 lines for optimal readability
-- Follow Go idiomatic patterns and fmt standards
-- Write comprehensive tests for all business logic
-- Unit test code at least 3 times to ensure reliability
-- Use meaningful variable and function names
-- Apply consistent error handling patterns
-- Eliminate dead code and unnecessary dependencies
-- Apply SOLID principles for maintainable design
-- Use only necessary libraries, avoid redundant code and libraries
-- Optimize code for minimal resource consumption (designed to run efficiently on servers with minimum 1 CPU, 1GB RAM)
-- Maintain >= 80% test coverage for business logic
-- Prioritize unit tests for faster feedback and isolation
-- Commit messages should be concise (under 60 characters when possible)
-- Minimize nil pointer risks with safe pointer handling
-- Ensure secure and performant pointer usage
+---
 
-## Benefits
+### 8.3 Cache & Messaging
 
-1. **Technology Agnostic**: Switch databases without changing business logic
-2. **Testable**: Mock interfaces for unit testing
-3. **Scalable**: Independent components can scale separately
-4. **Maintainable**: Clear separation of concerns
-5. **Future-Proof**: Easy to adapt to new requirements or technologies
+* Cache: Redis 8+ or Valkey
+* Client: `github.com/redis/go-redis/v9`
+* Messaging: Redis-based queue or stream
+
+---
+
+## 9. Configuration
+
+* Configuration is loaded at bootstrap
+* Uses go-kratos config system
+* Environment-specific overrides allowed
+* Domain and Application layers must never read env vars directly
+
+---
+
+## 10. Architectural Rules (Mandatory)
+
+The following rules are **non-negotiable**:
+
+* Domain MUST NOT import:
+
+    * Infrastructure
+    * Frameworks
+    * Database drivers
+* Application MUST NOT import Infrastructure
+* Infrastructure MUST NOT be referenced by Domain or Application
+* Cross-module communication must occur via Ports or Events
+
+Violations are considered **architectural defects**.
+
+---
+
+## 11. Code Quality Standards
+
+* Prefer small, focused functions
+* Optimize for readability and clarity
+* Follow Go idioms and `gofmt`
+* Use meaningful names
+* Apply SOLID principles
+* Avoid premature abstraction
+* Eliminate dead code
+* Minimize nil pointer risks
+* Optimize for low-resource environments (≥ 1 CPU, 1GB RAM)
+
+### Testing
+
+* ≥ 80% coverage for Application & Domain layers
+* Prefer unit tests over integration tests
+* Use mocks/fakes for ports
+
+---
+
+## 12. Benefits
+
+* Technology-agnostic core
+* Highly testable business logic
+* Clear separation of concerns
+* Scalable and maintainable design
+* Suitable for long-term, enterprise-grade systems
