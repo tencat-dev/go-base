@@ -4,7 +4,7 @@ package helloworld.v1;
 
 import "google/api/annotations.proto";
 
-option go_package = "github.com/tencat-dev/go-base/api/helloworld/v1";
+option go_package = "github.com/tencat-dev/go-base/codegen/proto/helloworld/v1";
 
 // The greeting service definition.
 service Greeter {

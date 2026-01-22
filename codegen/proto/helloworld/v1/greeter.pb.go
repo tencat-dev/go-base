@@ -123,8 +123,8 @@ const file_helloworld_v1_greeter_proto_rawDesc = "" +
 	"HelloReply\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage2i\n" +
 	"\aGreeter\x12^\n" +
-	"\bSayHello\x12\x1b.helloworld.v1.HelloRequest\x1a\x19.helloworld.v1.HelloReply\"\x1a\x82\xd3\xe4\x93\x02\x14\x12\x12/helloworld/{name}B\xa7\x01\n" +
-	"\x11com.helloworld.v1B\fGreeterProtoP\x01Z/github.com/tencat-dev/go-base/api/helloworld/v1\xa2\x02\x03HXX\xaa\x02\rHelloworld.V1\xca\x02\rHelloworld\\V1\xe2\x02\x19Helloworld\\V1\\GPBMetadata\xea\x02\x0eHelloworld::V1b\x06proto3"
+	"\bSayHello\x12\x1b.helloworld.v1.HelloRequest\x1a\x19.helloworld.v1.HelloReply\"\x1a\x82\xd3\xe4\x93\x02\x14\x12\x12/helloworld/{name}B\xb1\x01\n" +
+	"\x11com.helloworld.v1B\fGreeterProtoP\x01Z9github.com/tencat-dev/go-base/codegen/proto/helloworld/v1\xa2\x02\x03HXX\xaa\x02\rHelloworld.V1\xca\x02\rHelloworld\\V1\xe2\x02\x19Helloworld\\V1\\GPBMetadata\xea\x02\x0eHelloworld::V1b\x06proto3"
 
 var (
 	file_helloworld_v1_greeter_proto_rawDescOnce sync.Once

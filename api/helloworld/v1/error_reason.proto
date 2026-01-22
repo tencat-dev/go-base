@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package helloworld.v1;
 
-option go_package = "github.com/tencat-dev/go-base/api/helloworld/v1";
+option go_package = "github.com/tencat-dev/go-base/codegen/proto/helloworld/v1";
 
 enum ErrorReason {
   GREETER_UNSPECIFIED = 0;
