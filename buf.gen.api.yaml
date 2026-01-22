@@ -7,17 +7,17 @@ managed:
       module: buf.build/googleapis/googleapis
 plugins:
   - local: protoc-gen-go
-    out: ./codegen/proto
+    out: ./api
     opt: paths=source_relative
 
   - local: protoc-gen-go-grpc
-    out: ./codegen/proto
+    out: ./api
     opt: paths=source_relative
 
   - local: protoc-gen-go-http
-    out: ./codegen/proto
+    out: ./api
     opt: paths=source_relative
 
-#  - local: protoc-gen-openapiv2
-#    out: ./codegen/proto
+#  - local: protoc-gen-openapi
+#    out: ./api
 #    opt: fq_schema_naming=true,default_response=false

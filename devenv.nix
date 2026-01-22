@@ -54,7 +54,8 @@
   '';
 
   scripts.buf-gen.exec = ''
-		buf generate
+		buf generate --template buf.gen.internal.yaml --exclude-path ./api
+		buf generate --template buf.gen.api.yaml --exclude-path ./internal/conf
   '';
 
   scripts.proto-gen.exec = ''
