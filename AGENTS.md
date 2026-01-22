@@ -165,6 +165,10 @@ Infrastructure is a **detail**, never a dependency of the core.
 * ORM / SQL builder: `github.com/stephenafamo/bob`
 * Migrations: `github.com/golang-migrate/migrate/v4`
 
+### 8.2 Dependency Injection
+
+* DI Framework: `github.com/goforj/wire`
+
 ```go
 type PostgreSQLUserRepository struct {
     db *pgxpool.Pool
