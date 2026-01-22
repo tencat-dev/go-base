@@ -229,12 +229,14 @@ Violations are considered **architectural defects**.
 * Avoid premature abstraction
 * Eliminate dead code
 * Minimize nil pointer risks
+* Code as a senior developer with 20+ years of experience
 * Optimize for low-resource environments (≥ 1 CPU, 1GB RAM)
 
 ### Testing
 
 * ≥ 80% coverage for Application & Domain layers
 * Prefer unit tests over integration tests
+* Always ensure unit tests are written before developing subsequent features
 * Use mocks/fakes for ports
 
 ---
