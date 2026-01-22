@@ -6,15 +6,15 @@
 package main
 
 import (
+	conf "github.com/tencat-dev/go-base/codegen/proto"
 	"github.com/tencat-dev/go-base/internal/biz"
-	"github.com/tencat-dev/go-base/internal/conf"
 	"github.com/tencat-dev/go-base/internal/data"
 	"github.com/tencat-dev/go-base/internal/server"
 	"github.com/tencat-dev/go-base/internal/service"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/google/wire"
+	"github.com/goforj/wire"
 )
 
 // wireApp init kratos application.

@@ -4,8 +4,8 @@ go 1.25
 
 require (
 	github.com/go-kratos/kratos/v2 v2.9.2
+	github.com/goforj/wire v1.1.0
 	github.com/google/uuid v1.6.0
-	github.com/google/wire v0.7.0
 	go.uber.org/automaxprocs v1.6.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20260120221211-b8f7ae30c516
 	google.golang.org/grpc v1.78.0
