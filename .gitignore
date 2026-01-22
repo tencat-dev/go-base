@@ -46,3 +46,4 @@ devenv.local.yaml
 **/.DS_Store
 
 config.yaml
+**/config.yaml
