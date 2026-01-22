@@ -125,6 +125,8 @@ This approach separates migration concerns from application code while maintaini
 - Commit messages should be concise (under 60 characters when possible)
 - Minimize nil pointer risks with safe pointer handling
 - Ensure secure and performant pointer usage
+- Optimize code for minimal resource consumption (designed to run efficiently on servers with minimum 1 CPU, 1GB RAM)
+- Write efficient algorithms and minimize memory allocations
 
 ## Benefits
 
