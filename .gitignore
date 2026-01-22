@@ -18,7 +18,7 @@ coverage.*
 profile.cov
 
 # Dependency directories (remove the comment below to include it)
-# vendor/
+vendor/
 
 # Go workspace file
 go.work
@@ -41,5 +41,7 @@ devenv.local.yaml
 
 # pre-commit
 .pre-commit-config.yaml
+
+.DS_Store
 
 config.yaml

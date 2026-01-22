@@ -34,6 +34,10 @@
 		go install github.com/bufbuild/buf/cmd/buf@latest
   '';
 
+  scripts.goget.exec = ''
+		go get -u ./...
+  '';
+
   scripts.migrate-create.exec = ''
     migrate create -ext sql -seq -dir migrations "$@"
   '';
