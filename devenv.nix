@@ -32,8 +32,15 @@
 		go install github.com/bufbuild/buf/cmd/buf@latest
   '';
 
-  scripts.migration-create.exec = ''
+  scripts.migrate-create.exec = ''
     migrate create -ext sql -seq -dir migrations "$@"
+  '';
+
+  scripts.migrate-cli.exec = ''
+		migrate \
+    -path "$DEVENV_ROOT/migrations" \
+    -database postgres://localhost:5432/database \
+    "$@"
   '';
 
   # https://devenv.sh/basics/
