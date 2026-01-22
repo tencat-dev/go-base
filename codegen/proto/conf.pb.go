@@ -300,8 +300,7 @@ func (x *Data) GetRedis() *RedisConfig {
 
 type DatabaseConfig struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Driver        string                 `protobuf:"bytes,1,opt,name=driver,proto3" json:"driver,omitempty"`
-	Source        string                 `protobuf:"bytes,2,opt,name=source,proto3" json:"source,omitempty"`
+	Dsn           string                 `protobuf:"bytes,1,opt,name=dsn,proto3" json:"dsn,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -336,16 +335,9 @@ func (*DatabaseConfig) Descriptor() ([]byte, []int) {
 	return file_conf_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *DatabaseConfig) GetDriver() string {
+func (x *DatabaseConfig) GetDsn() string {
 	if x != nil {
-		return x.Driver
-	}
-	return ""
-}
-
-func (x *DatabaseConfig) GetSource() string {
-	if x != nil {
-		return x.Source
+		return x.Dsn
 	}
 	return ""
 }
@@ -443,10 +435,9 @@ const file_conf_proto_rawDesc = "" +
 	"\atimeout\x18\x03 \x01(\v2\x19.google.protobuf.DurationR\atimeout\"m\n" +
 	"\x04Data\x126\n" +
 	"\bdatabase\x18\x01 \x01(\v2\x1a.kratos.api.DatabaseConfigR\bdatabase\x12-\n" +
-	"\x05redis\x18\x02 \x01(\v2\x17.kratos.api.RedisConfigR\x05redis\"@\n" +
-	"\x0eDatabaseConfig\x12\x16\n" +
-	"\x06driver\x18\x01 \x01(\tR\x06driver\x12\x16\n" +
-	"\x06source\x18\x02 \x01(\tR\x06source\"\xb9\x01\n" +
+	"\x05redis\x18\x02 \x01(\v2\x17.kratos.api.RedisConfigR\x05redis\"\"\n" +
+	"\x0eDatabaseConfig\x12\x10\n" +
+	"\x03dsn\x18\x01 \x01(\tR\x03dsn\"\xb9\x01\n" +
 	"\vRedisConfig\x12\x18\n" +
 	"\anetwork\x18\x01 \x01(\tR\anetwork\x12\x12\n" +
 	"\x04addr\x18\x02 \x01(\tR\x04addr\x12<\n" +

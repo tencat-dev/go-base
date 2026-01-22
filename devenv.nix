@@ -5,7 +5,10 @@
   env.GREET = "devenv";
 
   # https://devenv.sh/packages/
-  packages = [ pkgs.git ];
+  packages = [
+  	pkgs.git
+  	pkgs.yq
+  ];
 
   # https://devenv.sh/languages/
 	languages.go = {
@@ -39,7 +42,7 @@
   scripts.migrate-cli.exec = ''
 		migrate \
     -path "$DEVENV_ROOT/migrations" \
-    -database postgres://localhost:5432/database \
+    -database $(yq '.data.database.dsn' $DEVENV_ROOT/configs/config.yaml) \
     "$@"
   '';
 

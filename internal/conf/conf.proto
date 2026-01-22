@@ -20,6 +20,7 @@ message HTTPServer {
   string addr = 2;
   google.protobuf.Duration timeout = 3;
 }
+
 message GRPCServer {
   string network = 1;
   string addr = 2;
@@ -32,8 +33,7 @@ message Data {
 }
 
 message DatabaseConfig {
-  string driver = 1;
-  string source = 2;
+  string dsn = 1;
 }
 
 message RedisConfig {

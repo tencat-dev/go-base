@@ -7,8 +7,7 @@ server:
     timeout: 1s
 data:
   database:
-    driver: mysql
-    source: root:root@tcp(127.0.0.1:3306)/test?parseTime=True&loc=Local
+    dsn: postgres://postgres:123456A@@127.0.0.1:5432/base
   redis:
     addr: 127.0.0.1:6379
     read_timeout: 0.2s
