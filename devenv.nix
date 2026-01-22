@@ -32,6 +32,10 @@
 		go install github.com/bufbuild/buf/cmd/buf@latest
   '';
 
+  scripts.migration-create.exec = ''
+    migrate create -ext sql -seq -dir migrations "$@"
+  '';
+
   # https://devenv.sh/basics/
   enterShell = ''
     init         # Run scripts directly
