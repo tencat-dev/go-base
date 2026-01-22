@@ -46,6 +46,10 @@
     "$@"
   '';
 
+  scripts.buf-gen.exec = ''
+		buf generate
+  '';
+
   # https://devenv.sh/basics/
   enterShell = ''
     init         # Run scripts directly
