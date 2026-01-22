@@ -120,13 +120,13 @@ This approach separates migration concerns from application code while maintaini
 - Apply consistent error handling patterns
 - Eliminate dead code and unnecessary dependencies
 - Apply SOLID principles for maintainable design
+- Use only necessary libraries, avoid redundant code and libraries
+- Optimize code for minimal resource consumption (designed to run efficiently on servers with minimum 1 CPU, 1GB RAM)
 - Maintain >= 80% test coverage for business logic
 - Prioritize unit tests for faster feedback and isolation
 - Commit messages should be concise (under 60 characters when possible)
 - Minimize nil pointer risks with safe pointer handling
 - Ensure secure and performant pointer usage
-- Optimize code for minimal resource consumption (designed to run efficiently on servers with minimum 1 CPU, 1GB RAM)
-- Write efficient algorithms and minimize memory allocations
 
 ## Benefits
 
