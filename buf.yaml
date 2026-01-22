@@ -14,4 +14,5 @@ modules:
 
 deps:
   - buf.build/googleapis/googleapis
-  - buf.build/bufbuild/protovalidate
+  - buf.build/kunstack/protoc-gen-go-errors
+#  - buf.build/bufbuild/protovalidate

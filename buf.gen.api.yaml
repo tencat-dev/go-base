@@ -18,6 +18,10 @@ plugins:
     out: ./api
     opt: paths=source_relative
 
+  - local: protoc-gen-go-errors
+    out: ./api
+    opt: paths=source_relative
+
 #  - local: protoc-gen-openapi
 #    out: ./api
 #    opt: fq_schema_naming=true,default_response=false
