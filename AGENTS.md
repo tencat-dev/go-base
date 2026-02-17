@@ -18,12 +18,14 @@ This project is built on **Clean Architecture** and **Hexagonal Architecture (Po
 
 ### 2.1 Clean Architecture
 
-The system strictly follows Clean Architecture principles:
+The system strictly follows Clean Architecture principles integrated with Domain-Driven Design (DDD):
 
 * **Independence of frameworks**: Frameworks are replaceable details
 * **Independence of UI**: Business logic does not depend on delivery mechanisms
 * **Independence of database**: Domain and use cases are unaware of storage
 * **Testability**: Business rules are testable without external systems
+* **Domain-centric design**: Focus on domain models and business logic as the core of the system
+* **DDD building blocks**: Utilize Entities, Value Objects, Aggregates, Domain Services, and Domain Events within the architecture
 
 Dependency direction is **always inward**.
 
@@ -34,6 +36,7 @@ Dependency direction is **always inward**.
 * **Ports** define contracts the core depends on
 * **Adapters** implement ports to interact with external systems
 * **Domain & Application** remain isolated from infrastructure
+* **DDD Integration**: Ports often represent domain interfaces that align with DDD patterns
 
 ---
 
@@ -62,6 +65,29 @@ Dependency direction is **always inward**.
 | Domain         | Core business rules and invariants                   |
 | Ports          | Interfaces owned by the core                         |
 | Infrastructure | Technology-specific implementations                  |
+
+---
+
+## 5. Domain Rules
+
+### 5.1 DDD Building Blocks
+
+The system implements Domain-Driven Design building blocks within the Domain layer:
+
+* **Entities**: Objects with distinct identities that run through lifecycles
+* **Value Objects**: Objects that are distinguished by their attribute values
+* **Aggregates**: Cluster of domain objects treated as a single unit
+* **Domain Services**: Operations that don't naturally belong to an Entity or Value Object
+* **Domain Events**: Record significant occurrences within the domain
+* **Repositories**: Provide collection-like access to aggregate roots
+* **Factories**: Encapsulate complex object creation logic
+
+### 5.2 Entities
+
+* Plain Go structs
+* No framework dependencies
+* No database annotations
+* No infrastructure imports
 
 ---
 
@@ -163,7 +189,7 @@ Infrastructure is a **detail**, never a dependency of the core.
 * Default database: **PostgreSQL 18+**
 * Driver: `github.com/jackc/pgx/v5`
 * ORM / SQL builder: `github.com/stephenafamo/bob`
-* Migrations: `github.com/golang-migrate/migrate/v4`
+* Migrations: `github.com/pressly/goose/v3`
 
 ```go
 type PostgreSQLUserRepository struct {
@@ -218,6 +244,7 @@ The following rules are **non-negotiable**:
 * Application MUST NOT import Infrastructure
 * Infrastructure MUST NOT be referenced by Domain or Application
 * Cross-module communication must occur via Ports or Events
+* Absolutely adhere to the declared libraries that have been pre-declared
 
 Violations are considered **architectural defects**.
 
@@ -226,6 +253,7 @@ Violations are considered **architectural defects**.
 ## 11. Code Quality Standards
 
 * Prefer small, focused functions
+* Functions must not exceed 60 lines of code
 * Optimize for readability and clarity
 * Follow Go idioms and `gofmt`
 * Use meaningful names
@@ -252,3 +280,61 @@ Violations are considered **architectural defects**.
 * Clear separation of concerns
 * Scalable and maintainable design
 * Suitable for long-term, enterprise-grade systems
+
+---
+
+## 13. Security
+
+### 13.1 Security Principles
+
+* **Defense in depth**: Multiple layers of security controls
+* **Least privilege**: Components operate with minimal required permissions
+* **Secure defaults**: Security configurations are enabled by default
+* **Fail securely**: Systems default to secure state on failures
+* **Zero trust**: Verify all requests regardless of origin
+
+### 13.2 Authentication & Authorization
+
+* All agents must implement proper authentication mechanisms
+* Authorization checks must occur at the Application layer
+* User Agent handles authentication flows and token management
+* Role-based access control (RBAC) for service-to-service communication
+
+### 13.3 Data Protection
+
+* Sensitive data encryption at rest and in transit
+* Input validation and sanitization at Presentation layer
+* Secure secrets management through configuration layer
+* Audit logging for sensitive operations
+
+### 13.4 Communication Security
+
+* All inter-service communication must use TLS
+* API endpoints must implement rate limiting
+* Proper CORS policies for web interfaces
+* Secure headers for HTTP responses
+
+---
+
+## 14. Domain Organization for Microservices
+
+### 14.1 Bounded Contexts
+
+* Organize domains around business capabilities and responsibilities
+* Each bounded context should have clear boundaries and responsibilities
+* Minimize coupling between different bounded contexts
+* Establish explicit interfaces for communication between contexts
+
+### 14.2 Domain Separation Principles
+
+* **Single Responsibility**: Each domain should have one clear purpose
+* **Cohesion**: Related functionality should be grouped within the same domain
+* **Autonomy**: Domains should be able to evolve independently
+* **Data Ownership**: Each domain owns its data and exposes it through well-defined APIs
+
+### 14.3 Microservices Readiness
+
+* Design domains to be independently deployable
+* Ensure domains have minimal runtime dependencies
+* Define clear contract-based interfaces between domains
+* Plan for eventual migration to separate services while maintaining monolithic structure initially

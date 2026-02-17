@@ -1,0 +1,105 @@
+syntax = "proto3";
+
+package user.v1;
+
+import "google/api/annotations.proto";
+import "buf/validate/validate.proto";
+import "authz/v1/permission.proto";
+
+option go_package = "github.com/tencat-dev/go-base/api/user/v1";
+
+service UserService {
+  rpc CreateUser (CreateUserRequest) returns (CreateUserReply) {
+    option (google.api.http) = {
+      post: "/api/v1/users"
+      body: "*"
+    };
+    option (authz.v1.permission) = {
+      object: "user"
+      action: "create"
+      roles: ["admin"]
+    };
+  };
+  rpc UpdateUser (UpdateUserRequest) returns (UpdateUserReply) {
+    option (google.api.http) = {
+      put: "/api/v1/users/{id}"
+      body: "*"
+    };
+    option (authz.v1.permission) = {
+      object: "user"
+      action: "update"
+      roles: ["admin"]
+    };
+  };
+  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserReply) {
+    option (google.api.http) = {
+      delete: "/api/v1/users/{id}"
+    };
+    option (authz.v1.permission) = {
+      object: "user"
+      action: "delete"
+      roles: ["admin"]
+    };
+  };
+  rpc GetUser (GetUserRequest) returns (GetUserReply) {
+    option (google.api.http) = {
+      get: "/api/v1/users/{id}"
+    };
+    option (authz.v1.permission) = {
+      object: "user"
+      action: "read"
+      roles: ["admin"]
+    };
+  };
+  rpc ListUser (ListUserRequest) returns (ListUserReply) {
+    option (google.api.http) = {
+      get: "/api/v1/users"
+    };
+    option (authz.v1.permission) = {
+      object: "user"
+      action: "list"
+      roles: ["admin"]
+    };
+  };
+}
+
+message User {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+}
+
+message CreateUserRequest {
+  string name = 1 [(buf.validate.field).string.max_len = 64];
+  string email = 2 [(buf.validate.field).string.email = true];
+  string password = 3 [(buf.validate.field).string.max_len = 128];
+}
+message CreateUserReply {
+  User data = 1;
+}
+
+message UpdateUserRequest {
+  string id = 1 [(buf.validate.field).string.uuid = true];
+  string name = 2 [(buf.validate.field).string.max_len = 64];
+  string email = 3 [(buf.validate.field).string.email = true];
+}
+message UpdateUserReply {
+  User data = 1;
+}
+
+message DeleteUserRequest {
+  string id = 1 [(buf.validate.field).string.uuid = true];
+}
+message DeleteUserReply {}
+
+message GetUserRequest {
+  string id = 1 [(buf.validate.field).string.uuid = true];
+}
+message GetUserReply {
+  User data = 1;
+}
+
+message ListUserRequest {}
+message ListUserReply {
+  repeated User data = 1;
+}

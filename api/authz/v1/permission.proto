@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package authz.v1;
+
+import "google/protobuf/descriptor.proto";
+
+option go_package = "github.com/tencat-dev/go-base/api/authz/v1";
+
+message PermissionOption {
+  string object = 1;
+  string action = 2;
+  repeated string roles = 3;
+}
+
+// Extend method options
+extend google.protobuf.MethodOptions {
+  PermissionOption permission = 50001;
+}

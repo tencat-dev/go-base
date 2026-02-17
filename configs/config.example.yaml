@@ -1,14 +1,26 @@
 server:
   http:
+    enable: true
     addr: 0.0.0.0:8000
-    timeout: 1s
+    timeout: 10s
   grpc:
+    enable: true
     addr: 0.0.0.0:9000
-    timeout: 1s
+    timeout: 10s
+  pprof:
+    enable: false
+    addr: 0.0.0.0:6060
 data:
   database:
-    dsn: postgres://postgres:123456A@@127.0.0.1:5432/base
+    migrate: true
+    driver: postgres
+    dsn: postgres://postgres:123456A@@localhost:5432/postgres?sslmode=disable
   redis:
     addr: 127.0.0.1:6379
     read_timeout: 0.2s
     write_timeout: 0.2s
+auth:
+  jwt:
+    secret: this_is_secret
+authz:
+  auto_sync: true

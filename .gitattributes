@@ -1,0 +1,15 @@
+# Enforce LF endings in git repository
+* text=auto eol=lf
+
+# Script files must use LF for Linux compatibility
+*.sh text eol=lf
+
+# Avoid diff noise for binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.exe binary
+
+# Normalize GitHub linguist detection if needed:
+*.go linguist-language=Go

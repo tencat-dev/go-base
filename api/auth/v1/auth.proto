@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package auth.v1;
+
+import "google/api/annotations.proto";
+import "buf/validate/validate.proto";
+
+option go_package = "github.com/tencat-dev/go-base/api/auth/v1";
+
+service AuthService {
+	rpc Login (LoginRequest) returns (LoginReply) {
+		option (google.api.http) = {
+			post: "/api/v1/auth/login"
+			body: "*"
+		};
+	};
+}
+
+message LoginRequest {
+	string email = 1 [(buf.validate.field).string.email = true];
+	string password = 2 [(buf.validate.field).string.max_len = 128];
+}
+message LoginReply {
+	string id = 1;
+	string email = 2;
+	string name = 3;
+	string access_token = 4;
+	string refresh_token = 5;
+}

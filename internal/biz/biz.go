@@ -2,5 +2,9 @@ package biz
 
 import "github.com/goforj/wire"
 
-// ProviderSet is biz providers.
-var ProviderSet = wire.NewSet(NewGreeterUsecase)
+// ProviderSetBiz is biz providers.
+var ProviderSetBiz = wire.NewSet(
+	NewUserBiz,
+	NewAuthBiz,
+	NewAuthzBiz,
+)

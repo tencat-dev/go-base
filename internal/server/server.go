@@ -4,5 +4,9 @@ import (
 	"github.com/goforj/wire"
 )
 
-// ProviderSet is server providers.
-var ProviderSet = wire.NewSet(NewGRPCServer, NewHTTPServer)
+// ProviderSetServer is server providers.
+var ProviderSetServer = wire.NewSet(
+	NewGRPCServer,
+	NewHTTPServer,
+	NewPprofServer,
+)

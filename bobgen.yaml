@@ -1,0 +1,38 @@
+psql:
+  driver: "github.com/jackc/pgx/v5/stdlib"
+  uuid_pkg: "google"
+  output: "internal/infra/persistence/postgres/bob"
+  except:
+    - "/^goose_/":
+    - "/^casbin_/":
+plugins_preset: 'default' # Valid values are "default", "all" or "none".
+no_tests: true
+plugins:
+  dbinfo:
+    disabled: true
+    pkgname: 'dbinfo'
+    destination: 'internal/infra/persistence/postgres/bob/dbinfo'
+  enums:
+    disabled: false
+    pkgname: 'enums'
+    destination: 'internal/infra/persistence/postgres/bob/enums'
+  models:
+    disabled: false
+    pkgname: 'models'
+    destination: 'internal/infra/persistence/postgres/bob/models'
+  factory:
+    disabled: true
+    pkgname: 'factory'
+    destination: 'internal/infra/persistence/postgres/bob/factory'
+  dberrors:
+    disabled: false
+    pkgname: 'dberrors'
+    destination: 'internal/infra/persistence/postgres/bob/dberrors'
+  where:
+    disabled: false
+  loaders:
+    disabled: false
+  joins:
+    disabled: false
+  counts:
+    disabled: false

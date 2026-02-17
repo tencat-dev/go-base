@@ -7,11 +7,14 @@
 package main
 
 import (
+	"context"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/tencat-dev/go-base/internal/authz"
 	"github.com/tencat-dev/go-base/internal/biz"
 	"github.com/tencat-dev/go-base/internal/conf"
 	"github.com/tencat-dev/go-base/internal/data"
+	"github.com/tencat-dev/go-base/internal/infra/auth"
 	"github.com/tencat-dev/go-base/internal/server"
 	"github.com/tencat-dev/go-base/internal/service"
 )
@@ -23,18 +26,53 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	dataData, cleanup, err := data.NewData(confData)
+func wireApp(contextContext context.Context, bootstrap *conf.Bootstrap, logger log.Logger, helper *log.Helper) (*kratos.App, func(), error) {
+	confServer := newServer(bootstrap)
+	confAuthz := newAuthz(bootstrap)
+	grpcServer := newGrpcServer(confServer)
+	confData := newData(bootstrap)
+	databaseConfig := newDatabaseConfig(confData)
+	dataData, cleanup, err := data.NewData(contextContext, databaseConfig, helper)
 	if err != nil {
 		return nil, nil, err
 	}
-	greeterRepo := data.NewGreeterRepo(dataData, logger)
-	greeterUsecase := biz.NewGreeterUsecase(greeterRepo)
-	greeterService := service.NewGreeterService(greeterUsecase)
-	grpcServer := server.NewGRPCServer(confServer, greeterService, logger)
-	httpServer := server.NewHTTPServer(confServer, greeterService, logger)
-	app := newApp(logger, grpcServer, httpServer)
+	userRepo := data.NewUserRepo(dataData, helper)
+	userBiz := biz.NewUserBiz(userRepo)
+	userServiceServer := service.NewUserService(userBiz)
+	authRepo := data.NewAuthRepo(dataData, helper)
+	iEnforcer, err := data.NewCasbinEnforcer(dataData)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	casbinAuthz, err := data.NewCasbinAuthz(iEnforcer)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	permissionChecker := data.NewPermissionChecker(casbinAuthz)
+	authBiz := biz.NewAuthBiz(authRepo, permissionChecker)
+	confAuth := newAuth(bootstrap)
+	jwt := newJwtConfig(confAuth)
+	tokenMaker := auth.NewJWTMaker(jwt)
+	authServiceServer := service.NewAuthService(authBiz, tokenMaker)
+	permissionManager := data.NewPermissionManager(casbinAuthz)
+	authzBiz := biz.NewAuthzBiz(permissionManager)
+	authzServiceServer := service.NewAuthzService(authzBiz)
+	authzRegistry := authz.NewAuthzRegistry()
+	authzMiddleware := authz.NewAuthzMiddleware(jwt, iEnforcer, authzRegistry)
+	serverGrpcServer := server.NewGRPCServer(grpcServer, userServiceServer, authServiceServer, authzServiceServer, logger, authzMiddleware)
+	httpServer := newHttpServer(confServer)
+	serverHttpServer := server.NewHTTPServer(httpServer, userServiceServer, authServiceServer, authzServiceServer, logger, authzMiddleware)
+	pprofServer := newPprofServer(confServer)
+	serverPprofServer := server.NewPprofServer(pprofServer)
+	app, cleanup2, err := newApp(contextContext, confServer, confAuthz, logger, serverGrpcServer, serverHttpServer, serverPprofServer, iEnforcer, authzRegistry)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	return app, func() {
+		cleanup2()
 		cleanup()
 	}, nil
 }

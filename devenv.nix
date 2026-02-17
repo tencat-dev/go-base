@@ -2,18 +2,19 @@
 
 {
   # https://devenv.sh/basics/
-  env.GREET = "devenv";
+  env.GOOSE_MIGRATION_DIR = "./migrations";
 
   # https://devenv.sh/packages/
   packages = [
   	pkgs.git
   	pkgs.yq
+  	pkgs.protobuf
   ];
 
   # https://devenv.sh/languages/
 	languages.go = {
 		enable = true;
-		version = "1.25.6";
+		version = "1.26.0";
 	};
 
   # https://devenv.sh/processes/
@@ -24,7 +25,7 @@
 
   # https://devenv.sh/scripts/
   scripts.init.exec = ''
-    go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+    go install github.com/pressly/goose/v3/cmd/goose@latest
     go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 		go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 		go install github.com/go-kratos/kratos/cmd/protoc-gen-go-http/v2@latest
@@ -40,15 +41,19 @@
 		go get -u ./...
   '';
 
-  scripts.migrate-create.exec = ''
-    migrate create -ext sql -seq -dir migrations "$@"
+  scripts.db-create.exec = ''
+    goose -s create "$@" sql
   '';
 
-  scripts.migrate-cli.exec = ''
-		migrate \
-    -path "$DEVENV_ROOT/migrations" \
-    -database $(yq '.data.database.dsn' $DEVENV_ROOT/configs/config.yaml) \
-    "$@"
+  scripts.db.exec = ''
+		GOOSE_DRIVER=$(yq -r '.data.database.driver' ./configs/config.yaml) \
+		GOOSE_DBSTRING=$(yq -r '.data.database.dsn' ./configs/config.yaml) \
+		goose -env=none "$@"
+  '';
+
+  scripts.db-gen.exec = ''
+		PSQL_DSN=$(yq -r '.data.database.dsn' ./configs/config.yaml) \
+		bobgen-psql -c ./bobgen.yaml
   '';
 
   scripts.wire-gen.exec = ''
@@ -56,16 +61,23 @@
   '';
 
   scripts.buf-gen.exec = ''
-		buf generate --template buf.gen.api.yaml api
-		buf generate --template buf.gen.internal.yaml internal/conf
+  	set -e
+    (cd api && buf generate --template buf.gen.api.yaml)
+    (cd internal/conf && buf generate --template buf.gen.internal.yaml)
   '';
 
-  scripts.proto-gen.exec = ''
-		kratos proto client "$@"
+  scripts.proto-add.exec = ''
+		kratos proto add "$@"
   '';
 
-  scripts.service-gen.exec = ''
+  scripts.proto-server.exec = ''
 		kratos proto server "$@" -t internal/service
+  '';
+
+  scripts.gen.exec = ''
+		wire-gen
+		buf-gen
+		db-gen
   '';
 
   # https://devenv.sh/basics/

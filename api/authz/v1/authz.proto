@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package authz.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "buf/validate/validate.proto";
+import "authz/v1/permission.proto";
+
+option go_package = "github.com/tencat-dev/go-base/api/authz/v1";
+
+service AuthzService {
+  rpc GrantRole(GrantRoleRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v1/authz/roles"
+      body: "*"
+    };
+    option (authz.v1.permission) = {
+      object: "role"
+      action: "grant"
+      roles: ["admin"]
+    };
+  }
+  rpc RevokeRole(RevokeRoleRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v1/authz/roles/revoke"
+      body: "*"
+    };
+    option (authz.v1.permission) = {
+      object: "role"
+      action: "revoke"
+      roles: ["admin"]
+    };
+  }
+  rpc GrantPermission(GrantPermissionRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v1/authz/permissions"
+      body: "*"
+    };
+    option (authz.v1.permission) = {
+      object: "permission"
+      action: "grant"
+      roles: ["admin"]
+    };
+  }
+}
+
+message GrantRoleRequest {
+  string id = 1 [(buf.validate.field).string.uuid = true];
+  string role = 2 [(buf.validate.field).string.min_len = 1];
+}
+message RevokeRoleRequest {
+  string id = 1 [(buf.validate.field).string.uuid = true];
+  string role = 2 [(buf.validate.field).string.min_len = 1];
+}
+message GrantPermissionRequest {
+  string subject = 1 [(buf.validate.field).required = true]; // only role
+  string object = 2 [(buf.validate.field).required = true]; // resource
+  string action = 3 [(buf.validate.field).required = true]; // action
+}

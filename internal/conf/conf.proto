@@ -1,30 +1,42 @@
 syntax = "proto3";
-package kratos.api;
+
+package conf;
 
 option go_package = "github.com/tencat-dev/go-base/internal/conf";
 
+import "buf/validate/validate.proto";
 import "google/protobuf/duration.proto";
 
 message Bootstrap {
   Server server = 1;
   Data data = 2;
+  Auth auth = 3;
+  Authz authz = 4;
 }
 
 message Server {
   HTTPServer http = 1;
   GRPCServer grpc = 2;
+  PprofServer pprof = 3;
 }
 
 message HTTPServer {
-  string network = 1;
-  string addr = 2;
-  google.protobuf.Duration timeout = 3;
+  bool enable = 1;
+  string network = 2;
+  string addr = 3 [(buf.validate.field).required = true];
+  google.protobuf.Duration timeout = 4;
 }
 
 message GRPCServer {
-  string network = 1;
-  string addr = 2;
-  google.protobuf.Duration timeout = 3;
+  bool enable = 1;
+  string network = 2;
+  string addr = 3 [(buf.validate.field).required = true];
+  google.protobuf.Duration timeout = 4;
+}
+
+message PprofServer {
+  bool enable = 1;
+  string addr = 2 [(buf.validate.field).required = true];
 }
 
 message Data {
@@ -33,7 +45,8 @@ message Data {
 }
 
 message DatabaseConfig {
-  string dsn = 1;
+  string driver = 1 [(buf.validate.field).required = true];
+  string dsn = 2 [(buf.validate.field).required = true];
 }
 
 message RedisConfig {
@@ -41,4 +54,16 @@ message RedisConfig {
   string addr = 2;
   google.protobuf.Duration read_timeout = 3;
   google.protobuf.Duration write_timeout = 4;
+}
+
+message Auth {
+  JWT jwt = 1;
+}
+
+message JWT {
+  string secret = 1 [(buf.validate.field).required = true];
+}
+
+message Authz {
+  bool auto_sync = 1;
 }
